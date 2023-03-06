@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_REGISTRY = "498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3"
+        APP_NAME = "server"
+        IMAGE_TAG = "app_ecr"
+        SSH_USER = "root"
+        SSH_HOST = "app"
+        SSH_KEY = credentials('id_rsa')
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/abhilashaj2214/Project3.git'
+            }
+        }
+        stage('Build and Publish to ECR') {
+            steps {
+                script {
+                    // Log in to ECR
+                    withDockerRegistry([url: "https://${DOCKER_REGISTRY}", credentialsId: "upgradabhilashajaiswal"]) {
+                        // Build Docker image
+                        def dockerImage = docker.build("${DOCKER_REGISTRY}/${APP_NAME}:${IMAGE_TAG}", "--build-arg NODE_ENV=production .")
+                        // Push Docker image to ECR
+                        docker.withRegistry("${DOCKER_REGISTRY}", "ecr:us-east-1:${APP_NAME}") {
+                            dockerImage.push("${IMAGE_TAG}")
+                        }
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // SSH into app host
+                sshagent(['your-ssh-key-id']) {
+                    sh "ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} 'docker ps -q --filter name=${APP_NAME}' > /tmp/container_id"
+                    sh "ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} 'docker stop $(cat /tmp/container_id)'"
+                    sh "ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} 'docker run -d --name ${APP_NAME} -p 80:8080 ${DOCKER_REGISTRY}/${APP_NAME}:${IMAGE_TAG}'"
+                }
+            }
+        }
+    }
+}
