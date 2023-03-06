@@ -6,7 +6,7 @@ pipeline {
         IMAGE_TAG = "app_ecr"
         SSH_USER = "slave"
         SSH_HOST = "172.31.84.148"
-        SSH_KEY = credentials('id_rsa')
+        SSH_KEY = credentials('key-0553cef4bab1d6a51')
     }
     stages {
         stage('Checkout') {
