@@ -4,8 +4,8 @@ pipeline {
         DOCKER_REGISTRY = "498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3"
         APP_NAME = "server"
         IMAGE_TAG = "app_ecr"
-        SSH_USER = "root"
-        SSH_HOST = "app"
+        SSH_USER = "slave"
+        SSH_HOST = "172.31.84.148"
         SSH_KEY = credentials('id_rsa')
     }
     stages {
