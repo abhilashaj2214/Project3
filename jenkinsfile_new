@@ -31,16 +31,10 @@ pipeline {
     stage('Deploy in Docker') {
       steps {
         script {
+          sh 'docker rm --force $(docker ps -aq --filter "label=${BUILD_NUMBER}")'
           sh 'sudo docker container run -itd -p 8081:8081 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
         }
       }
     }
-  }
-   post {
-    always {
-      deleteDir()
-      sh 'sudo docker rmi 285451070707.dkr.ecr.us-east-1.amazonaws.com/node-app-project:${BUILD_NUMBER}'
-    }
-
   }
 }
