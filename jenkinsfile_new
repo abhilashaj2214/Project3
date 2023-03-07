@@ -31,7 +31,7 @@ pipeline {
     stage('Deploy in Docker') {
       steps {
         script {
-          sh 'sudo docker rm --force $(docker ps -aq --filter "label=${BUILD_NUMBER}")'
+          sh 'sudo docker rm --force $(docker ps -aq)'
           sh 'sudo docker container run -itd -p 8081:8081 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
         }
       }
