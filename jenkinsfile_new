@@ -36,11 +36,4 @@ pipeline {
       }
     }
   }
-
-  post {
-    always {
-      deleteDir()
-      sh 'sudo docker rmi 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
-    }
-  }
 }
