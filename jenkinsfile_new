@@ -21,8 +21,8 @@ pipeline {
           steps {
            sh 'pwd'
             sh 'cd node && sudo docker build . -t 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
-            sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 498253739908.dkr.ecr.us-east-1.amazonaws.com'
-            sh 'docker push 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
+            sh 'aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 498253739908.dkr.ecr.us-east-1.amazonaws.com'
+            sh 'sudo docker push 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
           }
         }
       }
@@ -31,7 +31,7 @@ pipeline {
     stage('Deploy in Docker') {
       steps {
         script {
-          sh 'docker container run -itd -p 8081:8081 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
+          sh 'sudo docker container run -itd -p 8081:8081 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
         }
       }
     }
