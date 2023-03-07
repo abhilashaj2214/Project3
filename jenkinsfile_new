@@ -1,0 +1,42 @@
+pipeline {
+  agent {
+    label 'worker'
+  }
+  stages {
+    stage('Git Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build Docker Image') {
+      parallel {
+        stage('Build Docker Image') {
+          steps {
+            sh 'cd node && sudo docker build . -t 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
+            sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 498253739908.dkr.ecr.us-east-1.amazonaws.com'
+            sh 'docker push 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
+          }
+        }
+
+             }
+    }
+
+    stage('Deploy in Docker') {
+      steps {
+        script {
+          sh 'docker container run -itd -p 8081:8081 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
+        }
+
+      }
+    }
+    
+}
+  post {
+    always {
+      deleteDir()
+      sh 'sudo docker rmi 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
+    }
+
+  }
+}
