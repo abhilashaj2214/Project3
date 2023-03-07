@@ -4,9 +4,9 @@ pipeline {
         DOCKER_REGISTRY = "498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3"
         APP_NAME = "server"
         IMAGE_TAG = "app_ecr"
-        SSH_USER = "slave"
-        SSH_HOST = "172.31.84.148"
-        SSH_KEY = credentials('AJ_Assignment2')
+        //SSH_USER = "slave"
+        //SSH_HOST = "172.31.84.148"
+        //SSH_KEY = credentials('AJ_Assignment2')
     }
     stages {
         stage('Checkout') {
@@ -29,6 +29,7 @@ pipeline {
                 }
             }
         }
+        /* 
         stage('Deploy') {
             steps {
                 // SSH into app host
@@ -39,5 +40,6 @@ pipeline {
                 }
             }
         }
+        */
     }
 }
