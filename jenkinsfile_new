@@ -33,7 +33,7 @@ pipeline {
         script {
           def containerName = "upgrad_proj"
           def containerInfo = sh(  script: "sudo docker inspect --format='{{.State.Status}}' ${containerName}", returnStdout: true, returnStatus: true )
-          if (containerInfo == 0) {  sh "sudo docker stop ${containerName}" }
+          if (containerInfo == 0) {  sh "sudo docker stop ${containerName}" sleep(time: 5, unit: 'SECONDS')}
           sh 'sudo docker container run -itd -p 8080:8081 --name upgrad_proj 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
         }
       }
