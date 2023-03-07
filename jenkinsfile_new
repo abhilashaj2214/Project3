@@ -31,7 +31,7 @@ pipeline {
     stage('Deploy in Docker') {
       steps {
         script {
-          sh 'sudo docker container run -itd -p 8080:8081 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
+          sh 'sudo docker container run -itd -p 8080:8081 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER} --name abhi_trial'
         }
       }
     }
