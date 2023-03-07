@@ -1,11 +1,15 @@
 pipeline {
-  agent {
-    label 'worker'
-  }
+  agent any
   stages {
-    stage('Git Checkout') {
+    stage('Checkout') {
       steps {
-        checkout scm
+        checkout([$class: 'GitSCM',
+                  branches: [[name: 'main']],
+                  userRemoteConfigs: [[url: 'https://github.com/abhilashaj2214/Project3.git']]])
+        script {
+          def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          echo "Current branch name: ${branchName}"
+        }
       }
     }
 
@@ -18,8 +22,7 @@ pipeline {
             sh 'docker push 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
           }
         }
-
-             }
+      }
     }
 
     stage('Deploy in Docker') {
@@ -27,16 +30,14 @@ pipeline {
         script {
           sh 'docker container run -itd -p 8081:8081 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
         }
-
       }
     }
-    
-}
+  }
+
   post {
     always {
       deleteDir()
       sh 'sudo docker rmi 498253739908.dkr.ecr.us-east-1.amazonaws.com/abhilasha_course3:${BUILD_NUMBER}'
     }
-
   }
 }
